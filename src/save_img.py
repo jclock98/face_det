@@ -3,8 +3,12 @@ import csv
 from os.path import join
 from PIL import Image, ImageFile
 import cv2
+from numpy.random import seed, randint
 
-def save(image):
+
+def save(image, folder='~/Documents/Progetti_Vari/Face_Detection/Faces_found'):
+    seed(42)
+    
     now = datetime.now()
     date_time = now.strftime("%Y-%m-%d-%H-%M-%S")	
 
@@ -12,20 +16,19 @@ def save(image):
 
     age = '' #age_detect(image)
 
-    filename = date_time + gender + age + '.jpeg' #counter?
+    rand_counter = str(randint(1,99,1)[0])
 
-    folder = '/Users/jacopoclocchiatti/Documents/Progetti_Vari/Face_Detection/Faces_found/' # look how to always determine the location of this folder
+    filename = date_time + '_' + gender + '_' + age + '_' + rand_counter + '.jpeg'
+
+    #folder = '~/Documents/Progetti_Vari/Face_Detection/Faces_found/'
     file_path = join(folder, filename)
 
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     image = Image.fromarray(image)
     image.save(file_path, "JPEG", quality=100, optimize=True, progressive=True)
 
-    with open('/Users/jacopoclocchiatti/Documents/Progetti_Vari/Face_Detection/Faces_found/face_found.csv', mode='a') as faces_file:
+    with open(join(folder, 'face_found.csv'), mode='a') as faces_file:
         face_writer = csv.writer(faces_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 
         face_writer.writerow([filename, gender, age, date_time])
 
-x = cv2.imread('../1263-045134-imagepage-scaled.jpg')
-x = cv2.cvtColor(x, cv2.COLOR_BGR2GRAY)
-save(x)

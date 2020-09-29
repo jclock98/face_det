@@ -1,9 +1,13 @@
 from fastai.vision.all import * 
 import cv2
+
 from datetime import datetime
 import csv
 from os.path import join
 from PIL import Image, ImageFile
+import random 
+
+random.seed(random.random())
 
 #load the trained model 
 gen_class = load_learner('gender.pkl')
@@ -32,11 +36,11 @@ def save(image):
     now = datetime.now()
     date_time = now.strftime("%Y-%m-%d-%H-%M-%S")	
 
-    gender = '' # gender_detect(image)
+    gender = gender_detect(image)
 
     age = '' #age_detect(image)
 
-    filename = date_time + gender + age + '.jpeg' #counter?
+    filename = date_time + gender + age + random.randint(0, 99) +'.jpeg' 
 
     folder = '/Users/jacopoclocchiatti/Documents/Progetti_Vari/Face_Detection/Faces_found/' # look how to always determine the location of this folder
     file_path = join(folder, filename)
@@ -55,6 +59,11 @@ def detect(frame):
     PATH = './yolov5/best.pt'
     
     #for face in face_detected_list -> save image
+    for face in faces_det:
+        w *= 1.25
+        h *= 1.25
+        image = frame[x:x+w, y:y+h]
+        save(image)
 
 def video_capture():
 # Video source - can be camera index number given by 'ls /dev/video*
@@ -66,8 +75,8 @@ def video_capture():
         ret, frame = cap.read()
         if ret:
         # Our operations on the frame come here
-            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-            detect(gray)
+            #frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            detect(frame)
 
         # Display the resulting frame
             cv2.imshow('frame',frame)
