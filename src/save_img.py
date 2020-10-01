@@ -4,17 +4,43 @@ from os.path import join
 from PIL import Image, ImageFile
 import cv2
 from numpy.random import seed, randint
+from copy import deepcopy
+
+min_img_dim = 640
+
+
+def resize(img):
+    if img.shape[0] <= img.shape[1]:
+        width = min_img_dim
+        scale = img.shape[0]/width
+        height = img.shape[1]*scale
+        resized = cv2.resize(img, (width, height), interpolation=cv2.INTER_AREA)
+    else:
+        height = min_img_dim
+        scale = img.shape[1]/width
+        width = img.shape[0]*scale
+        resized = cv2.resize(img, (width, height), interpolation=cv2.INTER_AREA)
+    return resized
 
 
 def save(image, folder='~/Documents/Progetti_Vari/Face_Detection/Faces_found'):
-    seed(42)
+    seed(randint(0, 99, 1)[0])
     
+    if image.shape[0] < min_img_dim or image.shape[1] < min_img_dim:
+        resized_img = resize(image)#resize face
+        print('Resizing face')
+    else:
+        resized_img = image
+
+    gender_image = resized_img.copy()
+    age_image = resized_img
+
+    gender = '' # gender_detect(gender_image)
+
+    age = '' #age_detect(age_image)
+
     now = datetime.now()
     date_time = now.strftime("%Y-%m-%d-%H-%M-%S")	
-
-    gender = '' # gender_detect(image)
-
-    age = '' #age_detect(image)
 
     rand_counter = str(randint(1,99,1)[0])
 
