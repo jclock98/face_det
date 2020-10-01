@@ -14,12 +14,12 @@ def resize(img):
         width = min_img_dim
         scale = img.shape[0]/width
         height = img.shape[1]*scale
-        resized = cv2.resize(img, (width, height), interpolation=cv2.INTER_AREA)
+        resized = cv2.resize(img, (width, height), interpolation=cv2.INTER_LINEAR)
     else:
         height = min_img_dim
         scale = img.shape[1]/width
         width = img.shape[0]*scale
-        resized = cv2.resize(img, (width, height), interpolation=cv2.INTER_AREA)
+        resized = cv2.resize(img, (width, height), interpolation=cv2.INTER_LINEAR)
     return resized
 
 
